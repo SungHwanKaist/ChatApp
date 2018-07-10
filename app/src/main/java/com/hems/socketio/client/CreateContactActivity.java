@@ -50,7 +50,7 @@ public class CreateContactActivity extends AppCompatActivity implements ContactR
         list = new ArrayList<>();
         adapter = new ContactRecyclerAdapter(this, list, this);
         recyclerView.setAdapter(adapter);
-        getContacts();
+        //getContacts();
     }
 
     @Override
@@ -134,7 +134,9 @@ public class CreateContactActivity extends AppCompatActivity implements ContactR
             public void onFailure(Throwable t) {
 
             }
+
         });
     }
+
 
 }
