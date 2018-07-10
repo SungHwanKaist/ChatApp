@@ -8,7 +8,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.pws.socketio.com.hems.socketio.client.LoginActivity">
+    tools:context="com.hems.socketio.client.LoginActivity">
 
     <!-- Login progress -->
     <ProgressBar
@@ -38,7 +38,7 @@
                     android:id="@+id/username"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/prompt_username"
+                    android:hint="@string/prompt_userid"
                     android:inputType="textNoSuggestions"
                     android:maxLines="1"
                     android:singleLine="true" />
@@ -71,6 +71,20 @@
                 android:layout_marginTop="16dp"
                 android:text="@string/action_sign_in_short"
                 android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/text_sign_up"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_vertical|center_horizontal"
+                android:text="Didn't you sign up?" />
+
+            <Button
+                android:id="@+id/button_sign_up"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="SIGN UP" />
 
         </LinearLayout>
     </ScrollView>
