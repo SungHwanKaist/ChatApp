@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TextInputEditText;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -15,14 +16,18 @@ import com.hems.socketio.client.R;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.DataOutputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class SignUpActivity extends Activity {
     private static final String REQUEST_URL="http://52.231.66.86:3000/api/user";
     private String TAG = "Contacts log";
-    private EditText etName, etUserName, etPassWord, etContact, etAge, etEmail;
+    private TextInputEditText etName, etUserName, etPassWord, etContact, etAge, etEmail;
     private Button button;
     private String Name, UserName, PassWord, Contact, Age, Email;
     @Override
@@ -30,26 +35,27 @@ public class SignUpActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
 
-        etName = (EditText)  findViewById(R.id.name);
-        etUserName= (EditText)findViewById(R.id.username);
-        etPassWord= (EditText)findViewById(R.id.password);
-        etContact=(EditText)findViewById(R.id.contact);
-        etAge=(EditText)findViewById(R.id.age);
-        etEmail=(EditText)findViewById(R.id.email);
-
-        Name = etName.getText().toString();
-        UserName = etUserName.getText().toString();
-        PassWord = etPassWord.getText().toString();
-        Contact = etContact.getText().toString();
-        Age = etAge.getText().toString();
-        Email = etEmail.getText().toString();
+        etName = (TextInputEditText)  findViewById(R.id.name);
+        etUserName= (TextInputEditText)findViewById(R.id.username);
+        etPassWord= (TextInputEditText)findViewById(R.id.password);
+        etContact=(TextInputEditText)findViewById(R.id.contact);
+        etAge=(TextInputEditText)findViewById(R.id.age);
+        etEmail=(TextInputEditText)findViewById(R.id.email);
 
         button = (Button) findViewById(R.id.enrollment);
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                Name = etName.getText().toString();
+                UserName = etUserName.getText().toString();
+                PassWord = etPassWord.getText().toString();
+                Contact = etContact.getText().toString();
+                Age = etAge.getText().toString();
+                Email = etEmail.getText().toString();
                 sendPost();
+
                 Toast.makeText(getApplicationContext(), "Sign up Success!", Toast.LENGTH_LONG);
                 startActivity(new Intent(SignUpActivity.this, LoginActivity.class));
             }
@@ -61,46 +67,52 @@ public class SignUpActivity extends Activity {
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
-                try {
-                    URL url = new URL(REQUEST_URL);
-                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                    conn.setRequestMethod("POST");
-                    conn.setRequestProperty("Content-Type", "application/json");
-                    //conn.setRequestProperty("Accept","application/json");
-                    conn.setDoOutput(true);
-                    conn.setDoInput(true);
 
-                    JSONArray jsonArray = new JSONArray();
+                try {
+                    URL object=new URL(REQUEST_URL);
+                    HttpURLConnection con = (HttpURLConnection) object.openConnection();
+                    con.setDoOutput(true);
+                    con.setDoInput(true);
+                    //con.setRequestProperty("Cache-Control", "no-cache");
+                    con.setRequestProperty("Content-Type", "application/json");
+                    con.setRequestProperty("Accept", "application/json");
+                    //con.setRequestProperty("Accept", "*/*");
+                    //con.setRequestProperty("X-Requested-With", "XMLHttpRequest");
+                    con.setRequestMethod("POST");
+                    //con.connect();
+
                     JSONObject jsonObject = new JSONObject();
 
-                    jsonObject.put("nickname", Name);
-                    jsonObject.put("userid", UserName);
+                    jsonObject.put("name", Name);
+                    jsonObject.put("username", UserName);
                     jsonObject.put("password", PassWord);
                     jsonObject.put("age", Age);
                     jsonObject.put("email", Email);
                     jsonObject.put("contact", Contact);
-                    jsonArray.put(jsonObject);
 
-                    DataOutputStream os = new DataOutputStream(conn.getOutputStream());
-                    //os.writeBytes(URLEncoder.encode(jsonParam.toString(), "UTF-8"));
-//                    os.writeBytes(jArray.toString());
-                    os.writeBytes(jsonArray.toString());
-                    os.flush();
-                    os.close();
+                    DataOutputStream wr = new DataOutputStream(con.getOutputStream());
+                    wr.write(jsonObject.toString().getBytes());
 
-                    Log.i("STATUS", String.valueOf(conn.getResponseCode()));
-                    Log.i("MSG" , conn.getResponseMessage());
+                    Log.d(TAG, jsonObject.toString());
 
-
-                    // convert JSONObject to JSON to String
-
-                    //Log.i("JSON", jArray.toString());
-
-
-                    conn.disconnect();
+                    //display what returns the POST request
+                    StringBuilder sb = new StringBuilder();
+                    int HttpResult =con.getResponseCode();
+                    if(HttpResult ==HttpURLConnection.HTTP_OK){
+                        BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream(),"utf-8"));
+                        String line = null;
+                        while ((line = br.readLine()) != null) {
+                            sb.append(line + "\n");
+                        }
+                        br.close();
+                        System.out.println(""+sb.toString());
+                    }else{
+                        System.out.println(con.getResponseMessage());
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+                finally { }
             }
         });
 

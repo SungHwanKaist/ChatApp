@@ -95,26 +95,6 @@ public class CreateChatActivity extends AppCompatActivity implements
         adapter.notifyDataSetChanged();
     }
 
-/*    private void getContacts() {
-        UserService request = (UserService) RetrofitCall.createRequest(UserService.class);
-        request.getUserList(sessionManager.getUserId()).enqueue(new RetrofitCallback<Contact>() {
-            @Override
-            public void onResponse(Contact response) {
-                if (response.getStatus() == Service.SUCCESS) {
-                    list.addAll(response.getData());
-                    adapter.notifyDataSetChanged();
-                } else {
-                    Toast.makeText(CreateChatActivity.this, response.getMessage(), Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onFailure(Throwable t) {
-
-            }
-        });
-    }*/
-
     private void createChat(ChatType chatType, ArrayList<String> users) {
         progressDialog = ProgressDialog.show(this, getString(R.string.app_name),
                 "Creating " + (chatType == ChatType.PERSONAL ? "private" : "group") + " chat", false);
@@ -160,6 +140,11 @@ public class CreateChatActivity extends AppCompatActivity implements
                     Contact chat = new Contact(cursor);
                     contacts.add(chat);
                 } while (cursor.moveToNext());
+
+//                Fragment1 fragment1 = new Fragment1();
+//                Bundle bundle = new Bundle();
+//                bundle.putParcelableArrayList("contactList", list);
+//                fragment1.setArguments(bundle);
             }
         }
         adapter.setDatas(contacts);

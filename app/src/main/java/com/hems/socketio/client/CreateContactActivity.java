@@ -50,7 +50,8 @@ public class CreateContactActivity extends AppCompatActivity implements ContactR
         list = new ArrayList<>();
         adapter = new ContactRecyclerAdapter(this, list, this);
         recyclerView.setAdapter(adapter);
-        //getContacts();
+        getContacts();
+
     }
 
     @Override
@@ -71,6 +72,9 @@ public class CreateContactActivity extends AppCompatActivity implements ContactR
                 }
             }
             createContact(contacts, contactList);
+
+
+
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -122,12 +126,16 @@ public class CreateContactActivity extends AppCompatActivity implements ContactR
         request.getUserList(sessionManager.getUserId()).enqueue(new RetrofitCallback<Contact>() {
             @Override
             public void onResponse(Contact response) {
+
                 if (response.getStatus() == Service.SUCCESS) {
                     list.addAll(response.getData());
                     adapter.notifyDataSetChanged();
                 } else {
                     Toast.makeText(CreateContactActivity.this, response.getMessage(), Toast.LENGTH_SHORT).show();
                 }
+
+
+
             }
 
             @Override
