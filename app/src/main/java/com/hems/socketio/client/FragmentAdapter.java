@@ -1,6 +1,6 @@
-package com.example.q.chatapp;
+package com.hems.socketio.client;
 
-import com.hems.socketio.client.ChatList;
+import com.hems.socketio.client.FragmentAdapter;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;

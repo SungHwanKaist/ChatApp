@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-<<<<<<< HEAD
+
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
@@ -20,9 +20,5 @@
     <color name="lavenderblush">#FFF0F5</color>
     <color name="floralwhite">#FFFAF0</color>
     <color name="limegreen">#32CD32</color>
-=======
-    <color name="colorPrimary">#cc0000</color>
-    <color name="colorPrimaryDark">#cc0000</color>
-    <color name="colorAccent">#cc0000</color>
->>>>>>> dc5e0100eec6dfd9664017ba3516e07f697bc7a3
+
 </resources>

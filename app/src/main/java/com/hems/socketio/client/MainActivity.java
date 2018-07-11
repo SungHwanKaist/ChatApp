@@ -1,6 +1,5 @@
 package com.hems.socketio.client;
 
-import android.R;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -10,11 +9,11 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.Toolbar;
 
 import com.hems.socketio.client.utils.SessionManager;
 
@@ -52,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
 //
 //        return super.onOptionsItemSelected(item);
 //    }
+//
 //    @Override
 //    public boolean onCreateOptionsMenu(Menu menu) {
 //
@@ -70,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
         sessionManager = SessionManager.newInstance(this);
 
         if (!sessionManager.isLoggedIn()) {
-            startActivity(new Intent(this, LoginActivity.class));
+            startActivity(new Intent(MainActivity.this, LoginActivity.class));
             finish();
         }
 
@@ -78,10 +78,10 @@ public class MainActivity extends AppCompatActivity {
 
         ActivityCompat.requestPermissions(this, PERMISSIONS, REQUEST_ALL);
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        tabLayout = findViewById(R.id.tabLayout);
+        tabLayout = (TabLayout) findViewById(R.id.tabLayout);
         tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.contact));
         tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.gallery));
         tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.exchange));
@@ -89,8 +89,8 @@ public class MainActivity extends AppCompatActivity {
 
         //ActivityCompat.requestPermissions(this, PERMISSIONS, 3);
 
-        viewPager = findViewById(R.id.pager);
-        com.example.q.chatapp.FragmentAdapter pagerAdapter = new com.example.q.chatapp.FragmentAdapter(getSupportFragmentManager(), tabLayout.getTabCount());
+        viewPager = (ViewPager) findViewById(R.id.pager);
+        FragmentAdapter pagerAdapter = new FragmentAdapter(getSupportFragmentManager(), tabLayout.getTabCount());
         viewPager.setAdapter(pagerAdapter);
 
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
@@ -118,8 +118,8 @@ public class MainActivity extends AppCompatActivity {
     private void setTabAdapter() {
 
         // Creating TabPagerAdapter adapter
-        viewPager = findViewById(R.id.pager);
-        com.example.q.chatapp.FragmentAdapter pagerAdapter = new com.example.q.chatapp.FragmentAdapter(getSupportFragmentManager(), tabLayout.getTabCount());
+        viewPager = (ViewPager) findViewById(R.id.pager);
+        FragmentAdapter pagerAdapter = new FragmentAdapter(getSupportFragmentManager(), tabLayout.getTabCount());
 
         viewPager.setAdapter(pagerAdapter);
         if(viewPager == null) {

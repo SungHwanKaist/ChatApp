@@ -1,11 +1,13 @@
 package com.hems.socketio.client;
 
-import android.app.Fragment;
-import android.app.LoaderManager;
-import android.content.CursorLoader;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
+//import android.content.CursorLoader;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.Loader;
+//import android.content.Loader;
 import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
@@ -47,7 +49,7 @@ import java.util.ArrayList;
 public class ChatList extends Fragment implements ChatListRecyclerAdapter.OnItemClickListener,
         LoaderManager.LoaderCallbacks<Cursor>, View.OnClickListener {
 
-    public ChatList(){};
+    public ChatList(){}
 
     private RecyclerView recyclerView;
     private ChatListRecyclerAdapter adapter;
@@ -62,13 +64,10 @@ public class ChatList extends Fragment implements ChatListRecyclerAdapter.OnItem
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_chat_list, container, false);
 
-
-
         Intent service = new Intent(getContext(), SocketIOService.class);
         service.putExtra(SocketIOService.EXTRA_EVENT_TYPE, SocketIOService.EVENT_TYPE_JOIN);
         service.putExtra(SocketIOService.EXTRA_USER_NAME, sessionManager.getUserId());
         getContext().startService(service);
-
 
         parentLayout = view.findViewById(R.id.parentLayout);
         recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
