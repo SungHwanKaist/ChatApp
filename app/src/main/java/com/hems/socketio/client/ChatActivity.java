@@ -112,7 +112,7 @@ public class ChatActivity extends AppCompatActivity
         buttonUploadImage.setOnClickListener(this);
         btnSend.setOnClickListener(this);
 
-        recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
+        recyclerView = (RecyclerView) findViewById(R.id.recyclerView_content_chat);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         chatList = new ArrayList<>();
         adapter = new ChatRecyclerAdapter(this, chatList, this);

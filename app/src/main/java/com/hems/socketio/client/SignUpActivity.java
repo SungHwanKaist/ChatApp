@@ -56,8 +56,9 @@ public class SignUpActivity extends Activity {
                 Email = etEmail.getText().toString();
                 sendPost();
 
-                Toast.makeText(getApplicationContext(), "Sign up Success!", Toast.LENGTH_LONG);
+                Toast.makeText(getApplicationContext(), "회원가입 성공!", Toast.LENGTH_LONG);
                 startActivity(new Intent(SignUpActivity.this, LoginActivity.class));
+                finish();
             }
         });
 
