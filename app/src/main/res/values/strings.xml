@@ -34,4 +34,6 @@
     <string name="menu_title_create">Create Chat</string>
     <string name="menu_title_delete_chat">Delete Chat</string>
     <string name="typing_message">%s is typing…</string>
+
+    <string name="take_picture">Take picture</string>
 </resources>

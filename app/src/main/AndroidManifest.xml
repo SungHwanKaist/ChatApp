@@ -110,9 +110,12 @@
             android:theme="@android:style/Theme.Holo.NoActionBar">
         </activity>
 
-        <activity
-            android:name=".Camera"
-            android:theme="@android:style/Theme.Holo.NoActionBar"/>
+        <activity android:name=".AndroidCameraApi">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
 
     </application>
 

@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
         if( id == R.id.camera_category ) {
             // on selecting grid view image
             // launch full screen activity
-            Intent i = new Intent(this, Camera.class);
+            Intent i = new Intent(this, AndroidCameraApi.class);
             Log.d(TAG,"Camera icon is activated.");
             this.startActivity(i);
             return true;
