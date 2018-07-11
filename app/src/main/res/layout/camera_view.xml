@@ -9,16 +9,12 @@
     <TextureView
         android:id="@+id/textureView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
-    <ImageView
+        android:layout_height="match_parent"/>
+    <Button
         android:id="@+id/btnCapture"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:text="CAPTURE"
         android:layout_alignParentBottom="true"
-        android:src="@drawable/camera"
-        android:background="@color/md_grey_600"
-        android:contentDescription="TODO">
-    </ImageView>
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
 </RelativeLayout>

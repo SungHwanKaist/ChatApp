@@ -45,7 +45,7 @@ import java.util.UUID;
 
 public class Camera extends Activity {
 
-    private ImageView btnCapture;
+    private Button btnCapture;
     private TextureView textureView;
     Context context = ChatContext.getAppContext();
 
@@ -262,7 +262,7 @@ public class Camera extends Activity {
         assert textureView != null;
         textureView.setSurfaceTextureListener(textureListener);
 
-        btnCapture = (ImageView) findViewById(R.id.btnCapture);
+        btnCapture = (Button) findViewById(R.id.btnCapture);
         btnCapture.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
