@@ -71,6 +71,8 @@ public class ChatList extends Fragment implements ChatListRecyclerAdapter.OnItem
         service.putExtra(SocketIOService.EXTRA_USER_NAME, sessionManager.getUserId());
         getContext().startService(service);
 
+
+
         parentLayout = view.findViewById(R.id.parentLayout);
         recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView_content_chat_list);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));

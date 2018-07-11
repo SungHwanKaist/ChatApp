@@ -36,29 +36,29 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
 
 
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//
-//        int id = item.getItemId();
-//        if( id == R.id.camera_category ) {
-//            // on selecting grid view image
-//            // launch full screen activity
-//            Intent i = new Intent(this, Camera.class);
-//            Log.d(TAG,"Camera icon is activated.");
-//            this.startActivity(i);
-//            return true;
-//        }
-//
-//        return super.onOptionsItemSelected(item);
-//    }
-//
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//
-//        MenuInflater menuInflater = getMenuInflater();
-//        menuInflater.inflate(R.menu.main,menu);
-//        return super.onCreateOptionsMenu(menu);
-//    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        int id = item.getItemId();
+        if( id == R.id.camera_category ) {
+            // on selecting grid view image
+            // launch full screen activity
+            Intent i = new Intent(this, Camera.class);
+            Log.d(TAG,"Camera icon is activated.");
+            this.startActivity(i);
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.menu_camera,menu);
+        return super.onCreateOptionsMenu(menu);
+    }
 
     private SessionManager sessionManager;
 

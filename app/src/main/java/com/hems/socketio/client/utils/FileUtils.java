@@ -136,7 +136,7 @@ public class FileUtils {
     }
 
     /**
-     * @return The MIME type for the given file name.
+     * @return The MIME type for the given file name.mple
      */
     public static String getMimeType(String fileName) {
 
