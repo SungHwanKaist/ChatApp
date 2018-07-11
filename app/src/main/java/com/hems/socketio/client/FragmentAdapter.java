@@ -25,10 +25,10 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
             case 0 :
                 return new ChatList();
             case 1 :
-                return new ChatList();
+                return new Fragment1();
 //            return new GridViewFragment();
             case 2 :
-                return new ChatList();
+                return new Fragment2();
 //                return new Temp();
             default:
                 Log.e("MainFragmentAdapter : ", "CANNOT GET FRAGMENTS");

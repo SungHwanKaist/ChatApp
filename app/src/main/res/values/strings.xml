@@ -6,10 +6,10 @@
     <string name="title_activity_login">Sign in</string>
 
     <!-- Strings related to login -->
-    <string name="prompt_userid">UserID</string>
+    <string name="prompt_username"></string>
     <string name="prompt_age">Age</string>
     <string name="prompt_contact">Contact</string>
-    <string name="prompt_nickname">Nickname</string>
+    <string name="prompt_name">name</string>
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>
     <string name="action_sign_in">Sign in or register</string>

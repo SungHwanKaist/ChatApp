@@ -64,6 +64,13 @@ public class ChatList extends Fragment implements ChatListRecyclerAdapter.OnItem
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_chat_list, container, false);
 
+        sessionManager = SessionManager.newInstance(getActivity());
+
+        if (!sessionManager.isLoggedIn()) {
+            startActivity(new Intent(getActivity(), LoginActivity.class));
+            //finish();
+        }
+
         Intent service = new Intent(getContext(), SocketIOService.class);
         service.putExtra(SocketIOService.EXTRA_EVENT_TYPE, SocketIOService.EVENT_TYPE_JOIN);
         service.putExtra(SocketIOService.EXTRA_USER_NAME, sessionManager.getUserId());
