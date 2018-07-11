@@ -10,7 +10,6 @@ import android.widget.TextView;
 
 import com.hems.socketio.client.R;
 import com.hems.socketio.client.base.BaseRecyclerAdapter;
-import com.hems.socketio.client.interfaces.OnItemClickListener;
 import com.hems.socketio.client.model.Contact;
 
 import java.util.ArrayList;
@@ -22,7 +21,7 @@ import java.util.ArrayList;
 public class ContactRecyclerAdapter extends BaseRecyclerAdapter<ContactRecyclerAdapter.ViewHolder, Contact> {
 
     public ContactRecyclerAdapter(Context context, ArrayList<Contact> items, OnItemClickListener onClickListener) {
-        super(context, R.layout.contact_item, items, onClickListener);
+        super(context, R.layout.contact_select_item, items, onClickListener);
     }
 
     class ViewHolder extends BaseRecyclerAdapter<BaseRecyclerAdapter.ViewHolder, Contact>.ViewHolder

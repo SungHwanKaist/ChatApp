@@ -8,7 +8,7 @@
     tools:showIn="@layout/activity_chat">
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/recyclerView"
+        android:id="@+id/recyclerView_content_chat"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginBottom="16dp"
@@ -28,8 +28,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         android:textSize="16sp"
-        android:textColor="@color/md_grey_800"
-        />
+        android:textColor="@color/md_grey_800" />
 
     <android.support.v7.widget.AppCompatButton
         android:id="@+id/upload_image"
@@ -61,4 +60,5 @@
         app:layout_constraintBottom_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
+
 </android.support.constraint.ConstraintLayout>

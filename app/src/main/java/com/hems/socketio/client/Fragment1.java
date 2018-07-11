@@ -30,6 +30,7 @@ import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.Toast;
 
+import com.hems.socketio.client.adapter.ContactListRecyclerAdapter;
 import com.hems.socketio.client.adapter.ContactRecyclerAdapter;
 import com.hems.socketio.client.api.ChatService;
 import com.hems.socketio.client.api.RetrofitCall;
@@ -47,13 +48,13 @@ import com.hems.socketio.client.utils.SessionManager;
 import java.util.ArrayList;
 import java.util.Comparator;
 
-public class Fragment1 extends Fragment implements ContactRecyclerAdapter.OnItemClickListener, LoaderManager.LoaderCallbacks<Cursor> {
+public class Fragment1 extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     public Fragment1(){}
 
     private RecyclerView recyclerView;
-    private ContactRecyclerAdapter adapter;
-    private ArrayList<Contact> list;
+    private ContactListRecyclerAdapter adapter;
+    private ArrayList<Contact> list = new ArrayList<>();
     private SessionManager sessionManager;
     private ProgressDialog progressDialog;
 
@@ -66,17 +67,21 @@ public class Fragment1 extends Fragment implements ContactRecyclerAdapter.OnItem
 //        Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar);
 //        setSupportActionBar(toolbar);
 
-        recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext(),
-                layoutManager.getOrientation()));
-        list = new ArrayList<>();
-        adapter = new ContactRecyclerAdapter(getContext(), list, this);
-        recyclerView.setAdapter(adapter);
-        getLoaderManager().initLoader(101, null, this);
+        recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView_fragment1);
+        setRecyclerView(recyclerView);
 
         return view;
+    }
+
+    public void setRecyclerView(RecyclerView recyclerView){
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        recyclerView.setLayoutManager(layoutManager);
+        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        adapter = new ContactListRecyclerAdapter(getContext(), list);
+        recyclerView.setAdapter(adapter);
+        recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext(), layoutManager.getOrientation()));
+        getLoaderManager().initLoader(101, null, this);
     }
 
 //    @Override
@@ -101,17 +106,17 @@ public class Fragment1 extends Fragment implements ContactRecyclerAdapter.OnItem
 //        return super.onOptionsItemSelected(item);
 //    }
 
-    @Override
-    public void onItemClick(View view, int position) {
-        adapter.getItem(position).setSelected(!adapter.getItem(position).isSelected());
-        adapter.notifyDataSetChanged();
-    }
-
-    @Override
-    public void onCheckedChange(CompoundButton buttonView, boolean isChecked, int position) {
-        adapter.getItem(position).setSelected(isChecked);
-        adapter.notifyDataSetChanged();
-    }
+//    @Override
+//    public void onItemClick(View view, int position) {
+//        adapter.getItem(position).setSelected(!adapter.getItem(position).isSelected());
+//        adapter.notifyDataSetChanged();
+//    }
+//
+//    @Override
+//    public void onCheckedChange(CompoundButton buttonView, boolean isChecked, int position) {
+//        adapter.getItem(position).setSelected(isChecked);
+//        adapter.notifyDataSetChanged();
+//    }
 
 //    private void createChat(ChatType chatType, ArrayList<String> users) {
 //        progressDialog = ProgressDialog.show(getContext(), getString(R.string.app_name),
