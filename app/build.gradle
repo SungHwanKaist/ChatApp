@@ -37,5 +37,6 @@ dependencies {
     implementation 'com.android.support:percent:25.3.1'
     implementation 'com.github.bumptech.glide:glide:3.7.0'
     implementation 'com.github.clans:fab:1.6.4'
+    implementation 'com.commit451:PhotoView:1.2.4'
 
 }
