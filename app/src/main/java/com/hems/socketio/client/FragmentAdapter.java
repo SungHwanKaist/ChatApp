@@ -23,9 +23,9 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
 
         switch (position) {
             case 0 :
-                return new ChatList();
-            case 1 :
                 return new Fragment1();
+            case 1 :
+                return new ChatList();
             case 2 :
                 return new Fragment2();
             default:
