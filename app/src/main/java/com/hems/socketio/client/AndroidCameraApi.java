@@ -3,6 +3,8 @@ package com.hems.socketio.client;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.ImageFormat;
 import android.graphics.SurfaceTexture;
 import android.hardware.camera2.CameraAccessException;
@@ -23,6 +25,7 @@ import android.os.HandlerThread;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Base64;
 import android.util.Log;
 import android.util.Size;
 import android.util.SparseIntArray;
@@ -31,11 +34,20 @@ import android.view.TextureView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
+
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -63,6 +75,10 @@ public class AndroidCameraApi extends AppCompatActivity {
     private boolean mFlashSupported;
     private Handler mBackgroundHandler;
     private HandlerThread mBackgroundThread;
+    private Bitmap bm;
+    private String encodedImage;
+    private static final String REQUEST_URL="http://52.231.66.86:3000/api/image";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -167,6 +183,7 @@ public class AndroidCameraApi extends AppCompatActivity {
             int rotation = getWindowManager().getDefaultDisplay().getRotation();
             captureBuilder.set(CaptureRequest.JPEG_ORIENTATION, ORIENTATIONS.get(rotation));
             final File file = new File(Environment.getExternalStorageDirectory()+"/pic.jpg");
+            Log.d(TAG,"endpoint 3!!!!!!!!!!!!!!!");
             ImageReader.OnImageAvailableListener readerListener = new ImageReader.OnImageAvailableListener() {
                 @Override
                 public void onImageAvailable(ImageReader reader) {
@@ -205,6 +222,12 @@ public class AndroidCameraApi extends AppCompatActivity {
                 public void onCaptureCompleted(CameraCaptureSession session, CaptureRequest request, TotalCaptureResult result) {
                     super.onCaptureCompleted(session, request, result);
                     Toast.makeText(AndroidCameraApi.this, "Saved:" + file, Toast.LENGTH_SHORT).show();
+                    Log.d(TAG,file.toString());
+
+                    bm = BitmapFactory.decodeFile(file.toString());
+                    encodedImage = img2str(bm);
+                    sendPost(encodedImage);
+
                     createCameraPreview();
                 }
             };
@@ -225,6 +248,70 @@ public class AndroidCameraApi extends AppCompatActivity {
             e.printStackTrace();
         }
     }
+
+    public static String img2str(Bitmap image)
+    {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        image.compress(Bitmap.CompressFormat.JPEG, 0, baos);
+        byte[] b = baos.toByteArray();
+        String result = Base64.encodeToString(b,Base64.URL_SAFE);
+        return result;
+    }
+
+    public void sendPost(String string) {
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+                try {
+                    URL object=new URL(REQUEST_URL);
+                    HttpURLConnection con = (HttpURLConnection) object.openConnection();
+                    con.setDoOutput(true);
+                    con.setDoInput(true);
+                    //con.setRequestProperty("Cache-Control", "no-cache");
+                    con.setRequestProperty("Content-Type", "application/json");
+                    con.setRequestProperty("Accept", "application/json");
+                    //con.setRequestProperty("Accept", "*/*");
+                    //con.setRequestProperty("X-Requested-With", "XMLHttpRequest");
+                    con.setRequestMethod("POST");
+                    //con.connect();
+
+                    JSONObject jsonObject = new JSONObject();
+
+                    jsonObject.put("username", "user");
+                    jsonObject.put("img", encodedImage);
+
+                    DataOutputStream wr = new DataOutputStream(con.getOutputStream());
+                    wr.write(jsonObject.toString().getBytes());
+
+                    Log.d(TAG, jsonObject.toString());
+
+                    //display what returns the POST request
+                    StringBuilder sb = new StringBuilder();
+                    int HttpResult =con.getResponseCode();
+                    if(HttpResult ==HttpURLConnection.HTTP_OK){
+                        BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream(),"utf-8"));
+                        String line = null;
+                        while ((line = br.readLine()) != null) {
+                            sb.append(line + "\n");
+                        }
+                        br.close();
+                        System.out.println(""+sb.toString());
+                    }else{
+                        System.out.println(con.getResponseMessage());
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                finally { }
+            }
+        });
+
+        thread.start();
+    }
+
+
+
     protected void createCameraPreview() {
         try {
             SurfaceTexture texture = textureView.getSurfaceTexture();

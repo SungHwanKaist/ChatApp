@@ -9,6 +9,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -55,8 +56,7 @@ public class GridViewImageAdapter extends BaseAdapter {
         }
 
         // get screen dimensions
-        Bitmap image = decodeFile(_filePaths.get(position), imageWidth,
-                imageWidth);
+        Bitmap image = str2img(_filePaths.get(position));
 
         imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
         imageView.setLayoutParams(new GridView.LayoutParams(imageWidth,
@@ -97,6 +97,13 @@ public class GridViewImageAdapter extends BaseAdapter {
     /*
      * Resizing image size
      */
+    public static Bitmap str2img(String input)
+    {
+        byte [] encodeByte= Base64.decode(input, Base64.URL_SAFE);
+        Bitmap bitmap = BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
+        return bitmap;
+    }
+
     public static Bitmap decodeFile(String filePath, int WIDTH, int HIGHT) {
         try {
 

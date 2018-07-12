@@ -11,6 +11,7 @@ import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
@@ -33,10 +34,15 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.regex.Pattern;
 
 import android.Manifest;
 import android.app.Activity;
@@ -46,15 +52,30 @@ import android.support.v4.app.ActivityCompat;
 import android.util.TypedValue;
 import android.widget.GridView;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
+
 public class Fragment2 extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
     private Utils utils;
     private ArrayList<String> imagePaths = new ArrayList<>();
+
+    private ArrayList<String> imgString = new ArrayList<>();
+
     private GridViewImageAdapter adapter;
     private GridView gridView;
     private int columnWidth;
 
     private SwipeRefreshLayout mSwipeRefreshLayout;
+
+    private static final String REQUEST_URL="http://52.231.66.86:3000/api/image";
+    private String result=null;
 
     public Fragment2(){}
 
@@ -74,15 +95,14 @@ public class Fragment2 extends Fragment implements SwipeRefreshLayout.OnRefreshL
 
         utils = new Utils(getContext());
 
+        getJSON();
+        jsonParser(result);
+
         // Initilizing Grid View
         InitilizeGridLayout();
 
-        // loading all image paths from SD card
-        imagePaths = utils.getFilePaths();
-
         // Gridview adapter
-        adapter = new GridViewImageAdapter(getActivity(), imagePaths,
-                columnWidth);
+        adapter = new GridViewImageAdapter(getActivity(), imgString, columnWidth);
 
         // setting grid view adapter
         gridView.setAdapter(adapter);
@@ -114,15 +134,14 @@ public class Fragment2 extends Fragment implements SwipeRefreshLayout.OnRefreshL
 
                 utils = new Utils(getContext());
 
+                getJSON();
+                jsonParser(result);
+
                 // Initilizing Grid View
                 InitilizeGridLayout();
 
-                // loading all image paths from SD card
-                imagePaths = utils.getFilePaths();
-
                 // Gridview adapter
-                adapter = new GridViewImageAdapter(getActivity(), imagePaths,
-                        columnWidth);
+                adapter = new GridViewImageAdapter(getActivity(), imgString, columnWidth);
 
                 // setting grid view adapter
                 gridView.setAdapter(adapter);
@@ -132,93 +151,124 @@ public class Fragment2 extends Fragment implements SwipeRefreshLayout.OnRefreshL
         },500);
     }
 
-    public static String img2str(Bitmap image)
-    {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        image.compress(Bitmap.CompressFormat.PNG, 100, baos);
-        byte[] b = baos.toByteArray();
-        String result = Base64.encodeToString(b,Base64.URL_SAFE);
+//    public static String img2str(Bitmap image)
+//    {
+//        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//        image.compress(Bitmap.CompressFormat.PNG, 100, baos);
+//        byte[] b = baos.toByteArray();
+//        String result = Base64.encodeToString(b,Base64.URL_SAFE);
+//        return result;
+//    }
+
+//    public static Bitmap str2img(String input)
+//    {
+//        byte [] encodeByte= Base64.decode(input, Base64.URL_SAFE);
+//        Bitmap bitmap = BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
+//        return bitmap;
+//    }
+
+
+
+    public String getJSON() {
+        Thread thread = new Thread(new Runnable() {
+            public void run() {
+                try {
+                    TrustManager[] trustAllCerts = new TrustManager[]{new X509TrustManager() {
+                        @Override
+                        public void checkClientTrusted(X509Certificate[] x509Certificates, String s) throws CertificateException { }
+
+                        @Override
+                        public void checkServerTrusted(X509Certificate[] x509Certificates, String s) throws CertificateException { }
+
+                        @Override
+                        public X509Certificate[] getAcceptedIssuers() {
+                            return new X509Certificate[0];
+                        }
+                    }};
+                    SSLContext sc = SSLContext.getInstance("SSL");
+                    sc.init(null,trustAllCerts,new java.security.SecureRandom());
+                    HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+
+                    //Log.d(TAG, REQUEST_URL);
+                    URL url = new URL(REQUEST_URL);
+                    HttpsURLConnection HttpsURLConnection = (HttpsURLConnection) url.openConnection();
+
+                    HttpsURLConnection.setReadTimeout(3000);
+                    HttpsURLConnection.setConnectTimeout(3000);
+//                    HttpsURLConnection.setDoOutput(true);
+//                    HttpsURLConnection.setDoInput(true);
+                    HttpsURLConnection.setRequestMethod("GET");
+                    HttpsURLConnection.setUseCaches(false);
+                    HttpsURLConnection.connect();
+
+                    int responseStatusCode = HttpsURLConnection.getResponseCode();
+
+                    InputStream inputStream;
+                    if (responseStatusCode == HttpsURLConnection.HTTP_OK) {
+
+                        inputStream = HttpsURLConnection.getInputStream();
+                    } else {
+                        inputStream = HttpsURLConnection.getErrorStream();
+                        //Log.d(TAG,"Response Status Code : " + responseStatusCode);
+                    }
+
+                    InputStreamReader inputStreamReader = new InputStreamReader(inputStream, "UTF-8");
+                    BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+
+                    StringBuilder sb = new StringBuilder();
+                    String line;
+
+                    while ((line = bufferedReader.readLine()) != null) {
+                        sb.append(line);
+                    }
+
+                    bufferedReader.close();
+                    inputStreamReader.close();
+                    HttpsURLConnection.disconnect();
+
+                    result = sb.toString().trim();
+//                    Log.d(TAG,result);
+
+
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+                catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+        });
+        thread.start();
+
         return result;
     }
 
-    public static Bitmap str2img(String input)
-    {
-        byte [] encodeByte= Base64.decode(input, Base64.URL_SAFE);
-        Bitmap bitmap = BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
-        return bitmap;
-    }
+    public boolean jsonParser(String jsonString){
 
-//    public void sendPost() throws IOException {
-//
-//        // 이미지
-//        Bitmap bitmap = myView.getBitmap();
-//
-//// 기타 필요한 내용
-//        String attachmentName = "bitmap";
-//        String attachmentFileName = "bitmap.bmp";
-//        String crlf = "\r\n";
-//        String twoHyphens = "--";
-//        String boundary =  "*****";
-//
-//// request 준비
-//        HttpURLConnection httpUrlConnection = null;
-//        URL url = new URL("http://example.com/server.cgi");
-//        httpUrlConnection = (HttpURLConnection) url.openConnection();
-//        httpUrlConnection.setUseCaches(false);
-//        httpUrlConnection.setDoOutput(true);
-//
-//        httpUrlConnection.setRequestMethod("POST");
-//        httpUrlConnection.setRequestProperty("Connection", "Keep-Alive");
-//        httpUrlConnection.setRequestProperty("Cache-Control", "no-cache");
-//        httpUrlConnection.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + this.boundary);
-//
-//// content wrapper시작
-//        DataOutputStream request = new DataOutputStream(
-//                httpUrlConnection.getOutputStream());
-//
-//        request.writeBytes(this.twoHyphens + this.boundary + this.crlf);
-//        request.writeBytes("Content-Disposition: form-data; name=\"" + this.attachmentName + "\";filename=\"" +
-//                this.attachmentFileName + "\"" + this.crlf);
-//        request.writeBytes(this.crlf);
-//
-//// Bitmap을 ByteBuffer로 전환
-//        byte[] pixels = new byte[bitmap.getWidth() * bitmap.getHeight()];
-//        for (int i = 0; i < bitmap.getWidth(); ++i) {
-//            for (int j = 0; j < bitmap.getHeight(); ++j) {
-//                //we're interested only in the MSB of the first byte,
-//                //since the other 3 bytes are identical for B&W images
-//                pixels[i + j] = (byte) ((bitmap.getPixel(i, j) & 0x80) >> 7);
-//            }
-//        }
-//        request.write(pixels);
-//
-//// content wrapper종료
-//        request.writeBytes(this.crlf);
-//        request.writeBytes(this.twoHyphens + this.boundary +
-//                this.twoHyphens + this.crlf);
-//
-//// buffer flush
-//        request.flush();
-//        request.close();
-//
-//// Response받기
-//        InputStream responseStream = new
-//                BufferedInputStream(httpUrlConnection.getInputStream());
-//        BufferedReader responseStreamReader =
-//                new BufferedReader(new InputStreamReader(responseStream));
-//        String line = "";
-//        StringBuilder stringBuilder = new StringBuilder();
-//        while ((line = responseStreamReader.readLine()) != null) {
-//            stringBuilder.append(line).append("\n");
-//        }
-//        responseStreamReader.close();
-//        String response = stringBuilder.toString();
-//
-//
-////Response stream종료
-//        responseStream.close();
-//
-//// connection종료
-//        httpUrlConnection.disconnect();
-//    }
+        if(jsonString == null) return false;
+//        exchangeRateList = new ArrayList<ExchangeRate>();
+//        onCreate에서 미리 선언해야함.
+        try {
+            JSONArray jsonArray = new JSONArray(jsonString);
+
+            imgString.clear();
+
+            //String p = "(USD)+/[A-Z]*";
+//            Pattern pk = Pattern.compile("(USD)+/(KRW)+");
+
+            for(int i=0; i<jsonArray.length();i++){
+                JSONObject imgInfo = jsonArray.getJSONObject(i);
+                //String currencyPair = exchangeInfo.getString("user");
+
+                String bitImg = imgInfo.getString("img");
+                imgString.add(bitImg);
+
+                }
+            } catch (JSONException e1) {
+            e1.printStackTrace();
+        }
+
+        return true;
+    }
 }
