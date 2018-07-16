@@ -8,6 +8,7 @@
     <!-- Strings related to login -->
     <string name="prompt_username">Username</string>
     <string name="prompt_age">Age</string>
+    <string name="prompt_state">state_message</string>
     <string name="prompt_contact">Contact</string>
     <string name="prompt_name">name</string>
     <string name="prompt_email">Email</string>
